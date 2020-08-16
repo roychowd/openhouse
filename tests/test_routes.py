@@ -53,8 +53,9 @@ def test_get_route(app, client):
 
     assert response.status_code == 200
 
+    # does not exist - returns 404
     url = '/api/log/get?userId=fsdf'
     response = client.get(url)
     assert response.status_code == 404
 
-    
+

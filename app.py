@@ -15,7 +15,6 @@ class Log(db.Model):
     id = db.Column(db.String, primary_key=True)
     userId = db.Column(db.String)
     time = db.Column(db.DateTime)
-    # session = db.Column(db.)
     log_type = db.Column(db.String)
     log_data = db.Column(db.String)
 
@@ -23,13 +22,28 @@ class Log(db.Model):
         return '<Log_Type %s>' % self.log_type
 
 
-
-@app.route('/')
-def index():
-    return jsonify({'hello': 'world'})
-    
 @app.route('/api/log', methods=['POST'])
 def add_log():
+    """
+    Adds Logs to database
+    .. example::
+       $ curl http://localhost:5000/api/log -X POST \
+         -d
+         '{
+        "userId": "ABC123XYZ",
+        "sessionId": "XYZ456ABC",
+        "actions": [
+            {
+            "time": "2018-10-18T21:37:30-06:00",
+            "type": "NAVIGATE",
+            "properties": {
+                "pageFrom": "communities",
+                "pageTo": "inventory"
+            }
+            }
+        ]
+        }'
+    """
     if request.method == "POST":
         # extract json from post request
         req_data = request.get_json()
@@ -41,17 +55,27 @@ def add_log():
             log_type = item["type"]
             log = Log(id=str(uuid.uuid1()), userId=user_id, time=datetime.strptime(time[:-6], "%Y-%m-%dT%H:%M:%S"), log_type=log_type,
                       log_data=json.dumps(item))
-            # print("LOG userid " ,log.userId, "\n Log time " log.time, "\n Log type" , log.log_type, "\n log data",log.log_data)
             db.session.add(log)
 
         db.session.commit()
         return "Success"
 
 
-
 @app.route("/api/log/get", methods=["GET"])
 def get_logs():
+    """
+    An endpoint that retreives logs from one of the following patameters (or a combination):
+        - userId = userId to query
+        - type = type of log that you want to query
+    Please either select date as a standalone argument or start and end to specify a time range
+        - date = used to search for exact match with date in format %Y-%m-%dT%H:%M:%S (optional)
+        - start = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need end date argument (start - end ) 
+        - end = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need start date argument (start - end ) 
+    .. example::
+       $ curl http://localhost:5000/api/log/get?userId=<userId>&type=<type>&start=<date>&end=<date> -X GET \
+    """
     if request.method == "GET":
+        # get all params from query string
         userId = request.args.get("userId",  default=None, type=str)
         log_type = request.args.get("type",  default=None, type=str)
         date = request.args.get("date",  default=None, type=str)
@@ -59,22 +83,28 @@ def get_logs():
         end = request.args.get("end",  default=None, type=str)
         isRange = start and end
         if isRange:
+            # format start and end
             start = datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
             end = datetime.strptime(end, "%Y-%m-%dT%H:%M:%S")
+        # add kwargs for sqlalcehmy db lookup
         kwargs = {'userId': userId}
         if log_type:
             kwargs["log_type"] = log_type
         if date:
             kwargs["date"] = date
+        # get all logs with conditions
         logs = Log.query.filter_by(**kwargs).all()
         actions = []
         if len(logs) == 0:
+            # no logs found
             return abort(404)
         for log in logs:
             if isRange:
-                if log.time <= end and log.time > start:
+                # check for time range
+                if log.time <= end and log.time >= start:
                     actions.append(json.loads(log.log_data))
             else:
+                # no range query so just add to response
                 actions.append(json.loads(log.log_data))
         if len(actions) == 0:
             return abort(404)
