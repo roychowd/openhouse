@@ -64,7 +64,7 @@ Params:
     - userId = userId to query
     - type = type of log that you want to query
     Please either select date as a stand alone argument or start and end to specify a time range
-            - date = used to search for exact match with date in format %Y-%m-%dT%H:%M:%S (optional)
+            - date = used to search for exact match with date in format %Y-%m-%dT%H:%M:%S 
             - start = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need end date argument (start - end )
             - end = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need start date argument (start - end )
 
