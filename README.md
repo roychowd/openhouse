@@ -10,7 +10,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 python app.py
 
-To run the tests:
+To run the tests (please run the server first):
 python -m pytest
 ```
 
@@ -33,7 +33,7 @@ In order to use the api use the following routes :
 
 ```bash
 
-baseurl: localhost:5000 or https://openhouse-code.herokuapp.com
+baseUrl: localhost:5000 or https://openhouse-code.herokuapp.com
 endpoint: /api/log
 
 .. example::
@@ -56,7 +56,7 @@ endpoint: /api/log
 ### Get Logs
 
 ```bash
-baseurl: localhost:5000 or https://openhouse-code.herokuapp.com
+baseUrl: localhost:5000 or https://openhouse-code.herokuapp.com
 /api/log/get?userId=<userId>&type=<type>&start=<date>&end=<date>
 
 Params:
