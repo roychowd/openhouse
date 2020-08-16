@@ -10,7 +10,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 python app.py
 
-To run the tests: 
+To run the tests:
 python -m pytest
 ```
 
@@ -34,7 +34,7 @@ In order to use the api use the following routes :
 ```bash
 
 baseurl: localhost:5000 or https://openhouse-code.herokuapp.com
-/api/log
+endpoint: /api/log
 
 .. example::
        $ curl -i -X POST -H  "Content-Type: application/json" -d
@@ -69,10 +69,10 @@ Params:
             - end = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need start date argument (start - end )
 
 .. example:
+    curl baseUrl\userId=ABC123XYZ&type=CLICK&start=2018-10-18T21:37:25&end=2018-10-18T21:37:29
 
- curl baseUrl\userId=ABC123XYZ&type=CLICK&start=2018-10-18T21:37:25&end=2018-10-18T21:37:29
-
- returns logs of the form:
+------------------------------------------------------------------------------------
+returns logs of the form:
 
 "{
      "actions": [
@@ -92,12 +92,11 @@ Params:
 
 Provide your comments on how you would make this solution cloud-scalable.
 
-Since this is a simple app, I would refactor the code to make it follow the [flask factory pattern](https://flask.palletsprojects.com/en/1.1.x/patterns/appfactories/) in order to scale and structure the flask app for more models, testing, and configruations. 
+Since this is a simple app, I would refactor the code to make it follow the [flask factory pattern](https://flask.palletsprojects.com/en/1.1.x/patterns/appfactories/) in order to scale and structure the flask app for more models, testing, and configruations.
 
-In addition here some other things that I would do: 
-    - I would use gunicorn (wsgi) in order to handle multiple requests instead of running the program through app.py 
-    - Use celery in order to handle longer and non trivial tasks 
-    - Use redis and postgres for faster reads
-    - Set up a load balancers as we scale
-    
+In addition here some other things that I would do:
 
+- I would use gunicorn (wsgi) in order to handle multiple requests instead of running the program through app.py
+- Use celery in order to handle longer and non trivial tasks
+- Use redis and postgres for faster reads
+- Set up a load balancers as we scale
