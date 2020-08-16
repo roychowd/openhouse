@@ -27,9 +27,8 @@ def add_log():
     """
     Adds Logs to database
     .. example::
-       $ curl http://localhost:5000/api/log -X POST \
-         -d
-         '{
+    $ curl -i -X POST -H  "Content-Type: application/json" -d 
+       '{ 
         "userId": "ABC123XYZ",
         "sessionId": "XYZ456ABC",
         "actions": [
@@ -41,8 +40,7 @@ def add_log():
                 "pageTo": "inventory"
             }
             }
-        ]
-        }'
+        ]  }'  http://localhost:5000/api/log
     """
     if request.method == "POST":
         # extract json from post request
@@ -67,7 +65,7 @@ def get_logs():
     An endpoint that retreives logs from one of the following patameters (or a combination):
         - userId = userId to query
         - type = type of log that you want to query
-    Please either select date as a standalone argument or start and end to specify a time range
+    Please either select date as a stand alone argument or start and end to specify a time range
         - date = used to search for exact match with date in format %Y-%m-%dT%H:%M:%S (optional)
         - start = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need end date argument (start - end ) 
         - end = intial date used for range query in format %Y-%m-%dT%H:%M:%S. Need start date argument (start - end ) 
